@@ -147,6 +147,5 @@ class Net(nn.Module):
         x = self.fc1(x)
         x = F.relu(x)
         x = self.dropout2(x)
-        x = self.fc2(x)
         output = F.log_softmax(x, dim=1)
         return output
