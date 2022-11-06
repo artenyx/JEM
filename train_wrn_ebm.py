@@ -134,6 +134,15 @@ def get_data(args):
              tr.Normalize((.5, .5, .5), (.5, .5, .5)),
              lambda x: x + args.sigma * t.randn_like(x)]
         )
+    elif args.dataset == "MNIST":
+        transform_train = tr.Compose(
+            [tr.Pad(4, padding_mode="reflect"),
+             tr.RandomCrop(im_sz),
+             tr.RandomHorizontalFlip(),
+             tr.ToTensor(),
+             tr.Normalize((0.5,), (0.5,)),
+             lambda x: x + args.sigma * t.randn_like(x)]
+        )
     else:
         transform_train = tr.Compose(
             [tr.Pad(4, padding_mode="reflect"),
@@ -143,11 +152,18 @@ def get_data(args):
              tr.Normalize((.5, .5, .5), (.5, .5, .5)),
              lambda x: x + args.sigma * t.randn_like(x)]
         )
-    transform_test = tr.Compose(
-        [tr.ToTensor(),
-         tr.Normalize((.5, .5, .5), (.5, .5, .5)),
-         lambda x: x + args.sigma * t.randn_like(x)]
-    )
+    if args.dataset == "MNIST":
+        transform_test = tr.Compose(
+            [tr.ToTensor(),
+             tr.Normalize((0.5,), (0.5,)),
+             lambda x: x + args.sigma * t.randn_like(x)]
+        )
+    else:
+        transform_test = tr.Compose(
+            [tr.ToTensor(),
+             tr.Normalize((.5, .5, .5), (.5, .5, .5)),
+             lambda x: x + args.sigma * t.randn_like(x)]
+        )
     def dataset_fn(train, transform):
         if args.dataset == "cifar10":
             return tv.datasets.CIFAR10(root=args.data_root, transform=transform, download=True, train=train)
