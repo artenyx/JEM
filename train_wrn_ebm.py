@@ -29,8 +29,6 @@ from tqdm import tqdm
 t.backends.cudnn.benchmark = True
 t.backends.cudnn.enabled = True
 seed = 1
-im_sz = 28
-n_ch = 1
 
 
 
@@ -284,6 +282,12 @@ def checkpoint(f, buffer, tag, args, device):
 
 
 def main(args):
+    if args.dataset == "MNIST":
+        im_sz = 28
+        n_ch = 1
+    else:
+        im_sz = 32
+        n_ch = 3
     utils.makedirs(args.save_dir)
     with open(f'{args.save_dir}/params.txt', 'w') as f:
         json.dump(args.__dict__, f)
