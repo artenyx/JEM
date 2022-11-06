@@ -50,7 +50,7 @@ class DataSubset(Dataset):
 class F(nn.Module):
     def __init__(self, depth=28, width=2, norm=None, dropout_rate=0.0, n_classes=10):
         super(F, self).__init__()
-        if n_ch == 3:
+        if args.n_ch == 3:
             self.f = wideresnet.Wide_ResNet(depth, width, norm=norm, dropout_rate=dropout_rate)
         else:
             self.f = wideresnet.Net()
@@ -105,7 +105,7 @@ def grad_vals(m):
 
 
 def init_random(args, bs):
-    return t.FloatTensor(bs, n_ch, im_sz, im_sz).uniform_(-1, 1)
+    return t.FloatTensor(bs, args.n_ch, args.im_sz, args.im_sz).uniform_(-1, 1)
 
 
 def get_model_and_buffer(args, device, sample_q):
@@ -130,7 +130,7 @@ def get_data(args):
     if args.dataset == "svhn":
         transform_train = tr.Compose(
             [tr.Pad(4, padding_mode="reflect"),
-             tr.RandomCrop(im_sz),
+             tr.RandomCrop(args.im_sz),
              tr.ToTensor(),
              tr.Normalize((.5, .5, .5), (.5, .5, .5)),
              lambda x: x + args.sigma * t.randn_like(x)]
@@ -138,7 +138,7 @@ def get_data(args):
     elif args.dataset == "MNIST":
         transform_train = tr.Compose(
             [tr.Pad(4, padding_mode="reflect"),
-             tr.RandomCrop(im_sz),
+             tr.RandomCrop(args.im_sz),
              tr.RandomHorizontalFlip(),
              tr.ToTensor(),
              tr.Normalize((0.5,), (0.5,)),
@@ -147,7 +147,7 @@ def get_data(args):
     else:
         transform_train = tr.Compose(
             [tr.Pad(4, padding_mode="reflect"),
-             tr.RandomCrop(im_sz),
+             tr.RandomCrop(args.im_sz),
              tr.RandomHorizontalFlip(),
              tr.ToTensor(),
              tr.Normalize((.5, .5, .5), (.5, .5, .5)),
@@ -283,11 +283,11 @@ def checkpoint(f, buffer, tag, args, device):
 
 def main(args):
     if args.dataset == "MNIST":
-        im_sz = 28
-        n_ch = 1
+        args.im_sz = 28
+        args.n_ch = 1
     else:
-        im_sz = 32
-        n_ch = 3
+        args.im_sz = 32
+        args.n_ch = 3
     utils.makedirs(args.save_dir)
     with open(f'{args.save_dir}/params.txt', 'w') as f:
         json.dump(args.__dict__, f)
