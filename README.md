@@ -17,7 +17,7 @@ Many thanks to my amazing co-authors: [Jackson (Kuan-Chieh) Wang](https://twitte
 ### Training
 To train a model on CIFAR10 as in the paper
 ```markdown
-python train_wrn_ebm.py --lr .0001 --dataset cifar10 --optimizer adam --p_x_weight 1.0 --p_y_given_x_weight 1.0 --p_x_y_weight 0.0 --sigma .03 --width 10 --depth 28 --save_dir /YOUR/SAVE/DIR --plot_uncond --warmup_iters 1000
+python train_wrn_ebm.py --lr .0001 --dataset MNIST --optimizer adam --p_x_weight 1.0 --p_y_given_x_weight 1.0 --p_x_y_weight 0.0 --sigma .03 --width 10 --depth 28 --save_dir /data --plot_uncond --warmup_iters 1000
 ```
 
 ### Evaluation
