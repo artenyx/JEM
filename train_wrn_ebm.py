@@ -29,8 +29,8 @@ from tqdm import tqdm
 t.backends.cudnn.benchmark = True
 t.backends.cudnn.enabled = True
 seed = 1
-im_sz = 32
-n_ch = 3
+im_sz = 28
+n_ch = 1
 
 
 
