@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import torch.cuda
 
 import utils
 import torch as t, torch.nn as nn, torch.nn.functional as tnnF, torch.distributions as tdist
@@ -422,6 +423,7 @@ def main(args):
 
 
 if __name__ == "__main__":
+    print("cuda:0" if torch.cuda.is_available() else "cpu")
     parser = argparse.ArgumentParser("Energy Based Models and Shit")
     parser.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "svhn", "cifar100", "MNIST"])
     parser.add_argument("--data_root", type=str, default="../data")
