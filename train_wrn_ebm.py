@@ -52,7 +52,7 @@ class DataSubset(Dataset):
 class F(nn.Module):
     def __init__(self, depth=28, width=2, norm=None, dropout_rate=0.0, n_classes=10):
         super(F, self).__init__()
-        self.f = wideresnet.Wide_ResNet(depth, width, norm=norm, dropout_rate=dropout_rate)
+        self.f = wideresnet.Wide_ResNet(depth, width, norm=norm, dropout_rate=dropout_rate, input_channels=n_ch)
         self.energy_output = nn.Linear(self.f.last_dim, 1)
         self.class_output = nn.Linear(self.f.last_dim, n_classes)
 
