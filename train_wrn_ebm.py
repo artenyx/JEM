@@ -154,7 +154,7 @@ def get_data(args):
         elif args.dataset == "cifar100":
             return tv.datasets.CIFAR100(root=args.data_root, transform=transform, download=True, train=train)
         elif args.dataset == "MNIST":
-            return tv.datasets.CIFAR100(root=args.data_root, transform=transform, download=True, train=train)
+            return tv.datasets.MNIST(root=args.data_root, transform=transform, download=True, train=train)
         else:
             return tv.datasets.SVHN(root=args.data_root, transform=transform, download=True,
                                     split="train" if train else "test")
