@@ -180,6 +180,7 @@ def get_data(args):
 
     # get all training inds
     full_train = dataset_fn(True, transform_train)
+    print(len(full_train))
     all_inds = list(range(len(full_train)))
     # set seed
     np.random.seed(1234)
@@ -329,7 +330,6 @@ def main(args):
                 param_group['lr'] = new_lr
             print("Decaying lr to {}".format(new_lr))
         for i, (x_p_d, _) in enumerate(dload_train):  # tqdm(enumerate(dload_train)):
-            print(len(dload_train))
             if cur_iter <= args.warmup_iters:
                 lr = args.lr * cur_iter / float(args.warmup_iters)
                 for param_group in optim.param_groups:
