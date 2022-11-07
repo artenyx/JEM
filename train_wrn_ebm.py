@@ -189,6 +189,7 @@ def get_data(args):
     # seperate out validation set
     if args.n_valid is not None:
         valid_inds, train_inds = all_inds[:args.n_valid], all_inds[args.n_valid:]
+        print(args.n_valid)
     else:
         valid_inds, train_inds = [], all_inds
     train_inds = np.array(train_inds)
