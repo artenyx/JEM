@@ -369,6 +369,8 @@ def main(args):
                                                                                  cur_iter,
                                                                                  l_p_y_given_x.item(),
                                                                                  acc.item()))
+
+                iter_loss_list.append((epoch, l_p_y_given_x.item()))
                 L += args.p_y_given_x_weight * l_p_y_given_x
 
             if args.p_x_y_weight > 0:  # maximize log p(x, y)
@@ -386,7 +388,6 @@ def main(args):
             if L.abs().item() > 1e8:
                 print("BAD BOIIIIIIIIII")
                 1/0
-            iter_loss_list.append((epoch, L))
             optim.zero_grad()
             L.backward()
             optim.step()
