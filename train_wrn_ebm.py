@@ -211,12 +211,12 @@ def get_data(args):
     dset_valid = DataSubset(
         dataset_fn(True, transform_test),
         inds=valid_inds)
-    dload_train = DataLoader(dset_train, batch_size=args.batch_size, shuffle=True, num_workers=4, drop_last=True)
-    dload_train_labeled = DataLoader(dset_train_labeled, batch_size=args.batch_size, shuffle=True, num_workers=4, drop_last=True)
+    dload_train = DataLoader(dset_train, batch_size=args.batch_size, shuffle=True, num_workers=12, drop_last=True)
+    dload_train_labeled = DataLoader(dset_train_labeled, batch_size=args.batch_size, shuffle=True, num_workers=12, drop_last=True)
     dload_train_labeled = cycle(dload_train_labeled)
     dset_test = dataset_fn(False, transform_test)
-    dload_valid = DataLoader(dset_valid, batch_size=100, shuffle=False, num_workers=4, drop_last=False)
-    dload_test = DataLoader(dset_test, batch_size=100, shuffle=False, num_workers=4, drop_last=False)
+    dload_valid = DataLoader(dset_valid, batch_size=100, shuffle=False, num_workers=12, drop_last=False)
+    dload_test = DataLoader(dset_test, batch_size=100, shuffle=False, num_workers=12, drop_last=False)
     return dload_train, dload_train_labeled, dload_valid,dload_test
 
 
@@ -328,7 +328,8 @@ def main(args):
                 new_lr = param_group['lr'] * args.decay_rate
                 param_group['lr'] = new_lr
             print("Decaying lr to {}".format(new_lr))
-        for i, (x_p_d, _) in tqdm(enumerate(dload_train)):
+        for i, (x_p_d, _) in enumerate(dload_train):  # tqdm(enumerate(dload_train)):
+            print(len(dload_train))
             if cur_iter <= args.warmup_iters:
                 lr = args.lr * cur_iter / float(args.warmup_iters)
                 for param_group in optim.param_groups:
@@ -357,6 +358,7 @@ def main(args):
                     print('P(x) | {}:{:>d} f(x_p_d)={:>14.9f} f(x_q)={:>14.9f} d={:>14.9f}'.format(epoch, i, fp, fq,
                                                                                                    fp - fq))
 
+
                 L += args.p_x_weight * l_p_x
 
 
@@ -380,7 +382,6 @@ def main(args):
                 if cur_iter % args.print_every == 0:
                     print('P(x, y) | {}:{:>d} f(x_p_d)={:>14.9f} f(x_q)={:>14.9f} d={:>14.9f}'.format(epoch, i, fp, fq,
                                                                                                       fp - fq))
-                    iter_loss_list.append((epoch, cur_iter, l_p_y_given_x.item(), fp, fq, fp-fq))
 
                 L += args.p_x_y_weight * l_p_x_y
 
