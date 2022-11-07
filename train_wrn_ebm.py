@@ -370,7 +370,6 @@ def main(args):
                                                                                  l_p_y_given_x.item(),
                                                                                  acc.item()))
 
-                iter_loss_list.append((epoch, l_p_y_given_x.item()))
                 L += args.p_y_given_x_weight * l_p_y_given_x
 
             if args.p_x_y_weight > 0:  # maximize log p(x, y)
@@ -381,6 +380,7 @@ def main(args):
                 if cur_iter % args.print_every == 0:
                     print('P(x, y) | {}:{:>d} f(x_p_d)={:>14.9f} f(x_q)={:>14.9f} d={:>14.9f}'.format(epoch, i, fp, fq,
                                                                                                       fp - fq))
+                    iter_loss_list.append((epoch, cur_iter, l_p_y_given_x.item(), fp, fq, fp-fq))
 
                 L += args.p_x_y_weight * l_p_x_y
 
