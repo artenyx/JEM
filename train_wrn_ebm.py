@@ -304,7 +304,6 @@ def main(args):
 
     # datasets
     dload_train, dload_train_labeled, dload_valid, dload_test = get_data(args)
-    print(len(dload_train))
 
     device = t.device('cuda' if t.cuda.is_available() else 'cpu')
 
