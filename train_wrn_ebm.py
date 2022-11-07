@@ -207,6 +207,7 @@ def get_data(args):
     dset_train = DataSubset(
         dataset_fn(True, transform_train),
         inds=train_inds)
+    print(len(dset_train))
     dset_train_labeled = DataSubset(
         dataset_fn(True, transform_train),
         inds=train_labeled_inds)
