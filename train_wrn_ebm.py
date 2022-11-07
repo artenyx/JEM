@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pandas as pd
 import torch.cuda
 
 import utils
@@ -319,6 +320,8 @@ def main(args):
 
     best_valid_acc = 0.0
     cur_iter = 0
+    iter_loss_list = []
+    loss_list = []
     for epoch in range(args.n_epochs):
         if epoch in args.decay_epochs:
             for param_group in optim.param_groups:
@@ -353,7 +356,9 @@ def main(args):
                 if cur_iter % args.print_every == 0:
                     print('P(x) | {}:{:>d} f(x_p_d)={:>14.9f} f(x_q)={:>14.9f} d={:>14.9f}'.format(epoch, i, fp, fq,
                                                                                                    fp - fq))
+
                 L += args.p_x_weight * l_p_x
+
 
             if args.p_y_given_x_weight > 0:  # maximize log p(y | x)
                 logits = f.classify(x_lab)
@@ -381,7 +386,7 @@ def main(args):
             if L.abs().item() > 1e8:
                 print("BAD BOIIIIIIIIII")
                 1/0
-
+            iter_loss_list.append((epoch, L))
             optim.zero_grad()
             L.backward()
             optim.step()
@@ -408,17 +413,21 @@ def main(args):
             f.eval()
             with t.no_grad():
                 # validation set
-                correct, loss = eval_classification(f, dload_valid, device)
-                print("Epoch {}: Valid Loss {}, Valid Acc {}".format(epoch, loss, correct))
-                if correct > best_valid_acc:
-                    best_valid_acc = correct
-                    print("Best Valid!: {}".format(correct))
+                correct_val, loss_val = eval_classification(f, dload_valid, device)
+                print("Epoch {}: Valid Loss {}, Valid Acc {}".format(epoch, loss_val, correct_val))
+                if correct_val > best_valid_acc:
+                    best_valid_acc = correct_val
+                    print("Best Valid!: {}".format(correct_val))
                     checkpoint(f, replay_buffer, "best_valid_ckpt.pt", args, device)
                 # test set
-                correct, loss = eval_classification(f, dload_test, device)
-                print("Epoch {}: Test Loss {}, Test Acc {}".format(epoch, loss, correct))
+                correct_test, loss_test = eval_classification(f, dload_test, device)
+                print("Epoch {}: Test Loss {}, Test Acc {}".format(epoch, loss_test, correct_test))
+                loss_list.append((correct_val, loss_val, correct_test, loss_test))
             f.train()
         checkpoint(f, replay_buffer, "last_ckpt.pt", args, device)
+        pd.DataFrame(iter_loss_list).to_csv("data/iter_loss_list.csv")
+        pd.DataFrame(loss_list).to_csv("data/loss_list.csv")
+
 
 
 
