@@ -180,7 +180,6 @@ def get_data(args):
 
     # get all training inds
     full_train = dataset_fn(True, transform_train)
-    print(len(full_train))
     all_inds = list(range(len(full_train)))
     # set seed
     np.random.seed(1234)
@@ -189,7 +188,6 @@ def get_data(args):
     # seperate out validation set
     if args.n_valid is not None:
         valid_inds, train_inds = all_inds[:args.n_valid], all_inds[args.n_valid:]
-        print(args.n_valid)
     else:
         valid_inds, train_inds = [], all_inds
     train_inds = np.array(train_inds)
@@ -215,12 +213,13 @@ def get_data(args):
         dataset_fn(True, transform_test),
         inds=valid_inds)
     dload_train = DataLoader(dset_train, batch_size=args.batch_size, shuffle=True, num_workers=12, drop_last=True)
+    print(len(dload_train))
     dload_train_labeled = DataLoader(dset_train_labeled, batch_size=args.batch_size, shuffle=True, num_workers=12, drop_last=True)
     dload_train_labeled = cycle(dload_train_labeled)
     dset_test = dataset_fn(False, transform_test)
     dload_valid = DataLoader(dset_valid, batch_size=100, shuffle=False, num_workers=12, drop_last=False)
     dload_test = DataLoader(dset_test, batch_size=100, shuffle=False, num_workers=12, drop_last=False)
-    return dload_train, dload_train_labeled, dload_valid,dload_test
+    return dload_train, dload_train_labeled, dload_valid, dload_test
 
 
 def get_sample_q(args, device):
