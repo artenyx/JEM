@@ -205,7 +205,6 @@ def get_data(args):
     dset_train = DataSubset(
         dataset_fn(True, transform_train),
         inds=train_inds)
-    print(len(dset_train))
     dset_train_labeled = DataSubset(
         dataset_fn(True, transform_train),
         inds=train_labeled_inds)
@@ -213,7 +212,6 @@ def get_data(args):
         dataset_fn(True, transform_test),
         inds=valid_inds)
     dload_train = DataLoader(dset_train, batch_size=args.batch_size, shuffle=True, num_workers=12, drop_last=True)
-    print(len(dload_train))
     dload_train_labeled = DataLoader(dset_train_labeled, batch_size=args.batch_size, shuffle=True, num_workers=12, drop_last=True)
     dload_train_labeled = cycle(dload_train_labeled)
     dset_test = dataset_fn(False, transform_test)
