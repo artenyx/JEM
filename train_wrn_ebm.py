@@ -426,17 +426,15 @@ def main(args):
                 loss_list.append((correct_val, loss_val, correct_test, loss_test))
             f.train()
 
-        if args.plot_uncond:
-            args.reinit_freq = 1
-            for j in range(args.reinit_only_samples):
-                x_q = sample_q(f, replay_buffer)
-                plot('{}/x_q_reinit_only_{}_{:>06d}.png'.format(args.save_dir, epoch, j), x_q)
 
         checkpoint(f, replay_buffer, "last_ckpt.pt", args, device)
         pd.DataFrame(iter_loss_list).to_csv("data/iter_loss_list.csv")
         pd.DataFrame(loss_list).to_csv("data/loss_list.csv")
-
-
+    if args.plot_uncond:
+        args.reinit_freq = 1
+        for j in range(args.reinit_only_samples):
+            x_q = sample_q(f, replay_buffer)
+            plot('{}/x_q_reinit_only_{}_{:>06d}.png'.format(args.save_dir, args.n_epochs, j), x_q)
 
 
 if __name__ == "__main__":
