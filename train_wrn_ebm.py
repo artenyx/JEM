@@ -425,6 +425,13 @@ def main(args):
                 print("Epoch {}: Test Loss {}, Test Acc {}".format(epoch, loss_test, correct_test))
                 loss_list.append((correct_val, loss_val, correct_test, loss_test))
             f.train()
+
+        if args.plot_uncond:
+            args.reinit_freq = 1
+            for j in range(args.reinit_only_samples):
+                x_q = sample_q(f, replay_buffer)
+                plot('{}/x_q_reinit_only_{}_{:>06d}.png'.format(args.save_dir, epoch, j), x_q)
+
         checkpoint(f, replay_buffer, "last_ckpt.pt", args, device)
         pd.DataFrame(iter_loss_list).to_csv("data/iter_loss_list.csv")
         pd.DataFrame(loss_list).to_csv("data/loss_list.csv")
@@ -476,6 +483,7 @@ if __name__ == "__main__":
     parser.add_argument("--reinit_freq", type=float, default=.05)
     parser.add_argument("--sgld_lr", type=float, default=1.0)
     parser.add_argument("--sgld_std", type=float, default=1e-2)
+    parser.add_argument("--reinit_only_samples", type=int, default=20)
     # logging + evaluation
     parser.add_argument("--save_dir", type=str, default='./experiment')
     parser.add_argument("--ckpt_every", type=int, default=10, help="Epochs between checkpoint save")
